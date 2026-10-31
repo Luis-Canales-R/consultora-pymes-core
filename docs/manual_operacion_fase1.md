@@ -7,9 +7,9 @@ El **Core RDBMS de la Consultora** representa el estado canónico ideal para la 
 
 ## 2. Estructura y Módulos de la Fase 1
 
-El modelo se divide en cuatro grandes pilares interconectados:
+El modelo se divide en cinco grandes pilares interconectados:
 
-### A. Módulo de Terceros (Clientes y Proveedores)
+### A. Módulo de Terceros (Clientes, Proveedores y Sponsors)
 * **Objetivo:** Centraliza la identidad fiscal, comercial y de contacto de todas las entidades externas que interactúan con la empresa.
 * **Componentes Clave:** 
   * Datos fiscales (RUT, razón social, dirección).
@@ -26,10 +26,16 @@ El modelo se divide en cuatro grandes pilares interconectados:
 * **Objetivo:** Automatizar el registro de hechos económicos garantizando la ecuación contable estricta ($Debe = Haber$) y separando conceptualmente el **Devengado** de la **Liquidación (Flujo de Caja)**.
 * **Componentes Clave:**
   * `cat_plan_cuentas`: Carga masiva jerárquica del plan de cuentas estándar Chile (Activo, Pasivo, Patrimonio, Ingresos, Costos, Gastos).
-  * `tbl_transacciones_cabecera`: Respaldo comercial y tributario (Facturas, boletas).
   * `tbl_asientos_cabecera` y `tbl_asientos_detalle`: Motor de partida doble.
 
-### D. Módulo de Organización y Control (Centros de Costo y Empleados)
+### D. Módulo de Transacciones Granulares (Operación Comercial y Liquidez)
+* **Objetivo:** Detallar el ciclo comercial diario de la PyME y gestionar los flujos monetarios con estricta precisión.
+* **Componentes Clave:**
+  * `tbl_ordenes_compra` y `tbl_compras_detalle`: Ciclo de compras a proveedores con estados de control (`BORRADOR`, `APROBADA`, `RECIBIDA`, `ANULADA`).
+  * `tbl_ventas_devengadas` y `tbl_ventas_detalle`: Registro de facturas y devengos hacia clientes.
+  * `tbl_movimientos_caja`: Capa de liquidez implementando el patrón de diseño financiero de **montos absolutos con atributos direccionales explícitos** (`INGRESO`, `EGRESO`, `TRASPASO_HASTA`, `TRASPASO_DESDE`).
+
+### E. Módulo de Organización y Control (Centros de Costo y Empleados)
 * **Objetivo:** Aportar las dimensiones organizacionales para el control de gestión (alineado con la taxonomía APQC) y la trazabilidad operativa.
 * **Componentes Clave:**
   * `tbl_centros_costo`: Jerarquía de áreas (Finanzas, Operaciones, Ventas, etc.).
@@ -44,6 +50,7 @@ Para desplegar o levantar el ecosistema completo desde cero en una nueva instanc
 1. **Creación del Plan de Cuentas y Motor Contable** (`sql/crear_modulo_contabilidad_transacciones.sql`): Levanta las tablas maestras contables y el catálogo de cuentas de Chile.
 2. **Creación del Módulo de Productos, Servicios y BOM** (`sql/crear_modulo_productos_servicios.sql`): Despliega la cabecera de ítems, extensiones ERP y la vista de costeo.
 3. **Creación de Centros de Costo y Empleados** (`sql/crear_modulo_centros_costo_empleados.sql`): Configura la estructura organizacional y los usuarios.
+4. **Creación de Tablas Transaccionales Granulares** (`sql/crear_tablas_transaccionales_granular.sql`): Despliega órdenes de compra, ventas devengadas y la capa de liquidez de caja.
 
 ### Verificación de Integridad y Cuadratura
 Todo ciclo transaccional debe finalizar validando la cuadratura de los asientos contables ejecutando la consulta de control:
