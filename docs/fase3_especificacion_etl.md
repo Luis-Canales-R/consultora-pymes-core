@@ -5,6 +5,7 @@ El Stored Procedure `sp_procesar_etl_fase3` centraliza la lógica de control tra
 
 ## 2. Parámetros de Entrada
 * `@nombre_archivo` (VARCHAR(150)): Identificador del archivo Excel origen procesado en la sesión de carga.
+* `@pestana_origen` (VARCHAR(50)): Nombre de la pestaña o hoja del archivo evaluada (por defecto 'Datos').
 
-## 3. Manejo de Errores
-Cualquier inconsistencia detectada (como claves de clientes no encontradas en `map_clientes` o montos inválidos) genera automáticamente una inserción en la tabla de auditoría `tbl_log_errores_etl` con el detalle de la fila y la pestaña de origen.
+## 3. Manejo de Errores y Auditoría
+Cualquier inconsistencia detectada (como claves de clientes no encontradas en `map_clientes` o desvíos en formatos) genera automáticamente una inserción en la tabla de auditoría `tbl_log_errores_etl` detallando la fila y la pestaña de origen.
