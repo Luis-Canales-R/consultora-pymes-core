@@ -1,0 +1,14 @@
+// ====================================================================
+// Proyecto: Sistema RDBMS para PyMEs (Fase 3)
+// Modelado de Datos: Tabla de Auditoría de Errores del Motor ETL
+// ====================================================================
+
+Table tbl_log_errores_etl {
+  id_log integer [primary key, increment, note: "Identificador único de la incidencia"]
+  nombre_archivo varchar(150) [not null, note: "Nombre de la plantilla Excel procesada"]
+  pestana_origen varchar(50) [not null, note: "Pestaña evaluada (Ventas_Devengadas, Compras_y_Gastos, Movimientos_Caja)"]
+  numero_fila integer [not null, note: "Número de fila exacta en el archivo Excel"]
+  tipo_error varchar(50) [not null, note: "Categoría del fallo (CLIENTE_NO_HOMOLOGADO, FORMATO_FECHA_INVALIDO, MONTO_INVALIDO, etc.)"]
+  detalle_mensaje varchar(500) [not null, note: "Descripción detallada del motivo del rechazo"]
+  fecha_intento datetime [default: `getdate()`, note: "Timestamp de la ejecución del motor ETL"]
+}
